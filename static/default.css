@@ -1,0 +1,219 @@
+body {
+	margin: 0;
+	background-color: #faf7f7;
+	color: #444;
+}
+
+.container {
+	width: 95%;
+//	max-width: 1240px;
+	margin-right: 4%;
+	margin-left: 4%;
+}
+
+.news_pic {
+	width: 95%;
+	border: 0;
+}
+
+.picture {
+	background-color: white;
+	padding: 0;
+	margin: 0;
+}
+
+.item {
+  width: 224px;
+  margin: 5px;
+  float: left;
+  border: 1px solid #ccc;
+  padding: 5px;
+  background-color: white;
+  color: #444;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.headline {
+	width: 220px;
+	border: 1px solid #aaa;
+ 	color: #111;
+}
+
+
+
+
+.item div {
+	padding: 4px;
+}
+
+.item .news_pic {
+  width: 98%;
+  border: 1px solid #ccc;
+  padding: 1px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 4px;
+}
+
+
+.title {
+	font-size: 12px;
+}
+
+.date {
+	padding: 10px;
+	text-align: right;
+}
+
+.summary {
+	text-align: left;
+	font-size: 14px;
+}
+
+.more {
+	text-align: right;
+	font-weight: bold;
+}
+
+.tags {
+	clear: both;
+	margin-top: 10px;
+	padding: 5px;
+	text-align: right;
+}
+
+.tags span {
+	white-space: nowrap;
+}
+
+
+.masonry,
+.masonry .masonry-brick {
+  -webkit-transition-duration: 0.7s;
+     -moz-transition-duration: 0.7s;
+       -o-transition-duration: 0.7s;
+          transition-duration: 0.7s;
+}
+
+.masonry {
+  -webkit-transition-property: height, width;
+     -moz-transition-property: height, width;
+       -o-transition-property: height, width;
+          transition-property: height, width;
+}
+
+.masonry .masonry-brick {
+  -webkit-transition-property: left, right, top;
+     -moz-transition-property: left, right, top;
+       -o-transition-property: left, right, top;
+          transition-property: left, right, top;
+
+}
+
+#mainwrapper {
+	margin: 20px;
+}
+
+
+#toTop {
+	width:100px;
+        border:1px solid #ccc;
+        background:#f7f7f7;
+        text-align:center;
+        padding:5px;
+        position:fixed; /* this is the magic */
+        bottom:10px; /* together with this to put the div at the bottom*/
+        right:10px;
+        cursor:pointer;
+        display:none;
+        color:#333;
+        font-family:verdana;
+        font-size:12px;
+	font-weight: bold;
+}
+
+#infscr-loading {
+ 	width: 250px;
+        border:1px solid #ccc;
+        background:#d7d7d7;
+        text-align:center;
+        padding:10px;
+        position:fixed; /* this is the magic */
+        bottom: 30px; /* together with this to put the div at the bottom*/
+        left: 10px;
+}
+
+/*sengo 20120413 新增*/
+
+//.nav-collapse {float: left;}
+//.navbar .nav > li {margin-left: 3px;}
+.newstitle a:link {}
+
+.fblike {
+	padding: 10px 0px 10px;
+	width: 200px;
+}
+.tags a:link {
+	color: #999;
+}
+.tags a:focus {}
+.tags a:hover {
+	color: #666;
+}
+.tags a:active {}
+
+.headline li {
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+	border-bottom: solid #ccc 1px;
+	color: #CCC;
+}
+
+.headline li a:link {
+	font-weight: bold;
+	color: #333;
+}
+.headline li a:focus {
+	color: #000;
+}
+.headline li  a:hover {
+	color: #08C;
+	text-decoration: none;
+}
+.headline li  a:active {}
+.headline li  a:visited {
+	color: #999;
+}
+
+.headline h3 {
+	padding-bottom: 5px;
+	padding-top: 5px;
+	padding-left: 5px;
+	margin-bottom: 8px;
+	border-bottom: dashed #eee 2px;
+	background-image: url(../images/clock.png);
+	background-repeat: no-repeat;
+	background-position: 190px 5px;
+}
+
+.title h3 {
+	padding-bottom: 5px;
+	padding-top: 5px;
+	padding-left: 5px;
+	margin-bottom: 8px;
+	border-bottom: dashed #eee 2px;
+	background-image: url(../images/tag.png);
+	background-repeat: no-repeat;
+	background-position: 190px 5px;
+}
+
+.W_linkb a, a.W_linkb, .W_linkb {
+    color: #6097d6;
+}
+
+
+.red {
+    color: #ef4d58;
+}
