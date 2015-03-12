@@ -1,9 +1,10 @@
 # newswall
 A real-time newswall, getting data from twitter or weibo.
 
-# Description
+## Description
 ```
-一个实时的新闻墙,给定指定的话题获取新浪微博(或twitter)上对应话题的最新内容，当微博(或twitter)上的内容更新后，新闻墙这边同步更新。
+一个实时的新闻墙,给定指定的话题获取新浪微博(或twitter)上对应话题的最新内容。
+当微博(或twitter)上的内容更新后，新闻墙这边同步更新。
 ```
 
 因为是要从新浪或Twitter服务器上获取数据，所以在服务端使用了`apscheduler`模块来进行计划任务，用间隔很短的时间向新浪服务器请求数据，然后对数据进行分析。
