@@ -41,13 +41,26 @@ var updater = {
     cursor: null,
 
     poll: function() {
-        $.ajax({url: "/updates", type: "POST", dataType: "text",
-                data: '', success: updater.onSuccess,
-                error: updater.onError});
+        $.postJSON("/updates","test", function(response) {
+        try {
+//        alert('success get update');
+//        alert(response);
+        console.info(response);
+            updater.newNews(response);
+        } catch (e) {
+            updater.onError();
+            return;
+        }
+        updater.errorSleepTime = 500;
+        window.setTimeout(updater.poll, 0);
+    });
     },
 
     onSuccess: function(response) {
         try {
+//        alert('success get update');
+        alert(response);
+//        console.info(response);
             updater.newNews(response);
         } catch (e) {
             updater.onError();
@@ -58,16 +71,20 @@ var updater = {
     },
 
     onError: function(response) {
+//        alert('error!');
         updater.errorSleepTime *= 2;
         console.log("Poll error; sleeping for", updater.errorSleepTime, "ms");
         window.setTimeout(updater.poll, updater.errorSleepTime);
     },
 
     newNews: function(response) {
+//        alert('push news');
         updater.showNews(response);
     },
 
     showNews: function(newsblock) {
+//    var newsblock = newsblock;
+//        console.info(newsblok);
         $("#newswall").prepend(newsblock);
         $('#newswall').masonry('reload');
         window.setTimeout(updater.poll, 0);
