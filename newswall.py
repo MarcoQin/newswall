@@ -39,23 +39,34 @@ class NewsBuffer(object):
         content.close()
         if first:
             self.cache[:] = []
-        for block in extract_all('<div class=\\"WB_cardwrap S_bg2 clearfix\\">', '<\\/div>\\t<\\/div>\\n<\\/div>\\n', html):
+        for block in extract_all('<div class=\\"WB_cardwrap S_bg2 clearfix\\" >', '<\\/div>\\t<\\/div>\\n<\\/div>\\n', html):
+
             user_name = extract('<a class=\\"W_texta W_fb\\" nick-name=\\"', '\\" href=\\"http:\\/\\/weibo.com', block)
+
             start = '<p class=\\"comment_txt\\" node-type=\\"feed_list_content\\" nick-name=\\"%s\\">' % user_name
+
             content = extract(start, '<\\/p>', block).replace('\n', '')
+
             newsid = hashlib.new("md5", content).hexdigest()
             newsblock = dict(user_name=user_name, content=content, id=newsid)
             self.cache.append(newsblock)
+
             if first:
                 self.idpool.append(newsid)
             else:
+                print 'parse update'
                 self.parse_update(newsblock)
 
     def parse_update(self, block):
         if block.get('id', None) not in self.idpool:
             logging.info("Get update!")
-            self.updatecache.append(block)
+            # print block
+
+            # print '*******',self.updatecache
             self.idpool.append(block.get('id'))
+            if not self.updatable:
+                self.updatecache[:] = []
+            self.updatecache.append(block)
             self.updatable = True
             self.cache.append(block)
             if len(self.cache) > self.cache_size:
@@ -71,7 +82,7 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("index.html", news=[])
 
-    @gen.coroutine
+    # @gen.coroutine
     def post(self):
         query = self.get_argument("q", "zhihu")
         logging.info("Got requests: %s" % query)
@@ -95,9 +106,9 @@ class MainHandler(tornado.web.RequestHandler):
         except:
             raise
         news = global_news_buffer.cache
+
         allnews = ''
         for block in news:
-            if block:
                 allnews += self.render_string("newsblock.html", news=block)
         allnews = allnews.replace('\n', '')
         allnews = allnews.replace('<\\/a>', '</a>')
@@ -105,26 +116,34 @@ class MainHandler(tornado.web.RequestHandler):
         allnews = allnews.strip()
         allnews = allnews.decode('unicode-escape')
         logging.info("Sendding response!")
+
         self.write(allnews)
+        # self.finish()
 
 
 class StatusHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
+    @gen.coroutine
     def post(self):
         while True:
             if global_news_buffer.updatable:
                 break
+        print 'going to sending update'
 
-        global_news_buffer.updatable = False
         newsblock = global_news_buffer.updatecache
-        global_news_buffer.updatecache[:] = []
+        global_news_buffer.updatable = False
+        print "*************",type(newsblock)
+        # global_news_buffer.updatecache[:] = []
         allnews = ''
         for block in newsblock:
+            print block
             if block:
                 allnews += self.render_string("newsblock.html", news=block)
+                print allnews
         allnews = allnews.replace('\n', '')
         allnews = allnews.replace('<\\/a>', '</a>')
         allnews = allnews.replace('<\\/em>', '</em>')
+        allnews = allnews.strip()
         allnews = allnews.decode('unicode-escape')
         logging.info("Sendding update!")
         self.write(allnews)
