@@ -10,6 +10,7 @@ import os.path
 import uuid
 import urllib2
 import hashlib
+import requests
 
 from tornado.concurrent import Future
 from tornado import gen
@@ -34,12 +35,28 @@ class NewsBuffer(object):
 
     def parse_url(self, first=False):
         logging.info("Start parsing url")
-        content = urllib2.urlopen(self.url)
-        html = content.read()
-        content.close()
+        #  content = urllib2.urlopen(self.url)
+        #  html = content.read()
+        #  content.close()
+        headers =  {
+            'host': 's.weibo.com',
+            'connection': 'keep-alive',
+            'pragma': 'no-cache',
+            'cache_control': 'no-cache',
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'upgrade_insecure_requests': '1',
+            'user_agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36',
+            'referer': 'http://d.weibo.com/102803?topnav=1&mod=logo&wvr=6',
+            'accept_encoding': 'gzip, deflate, sdch',
+            'accept_language': 'zh-CN,zh;q=0.8,ja;q=0.6,en;q=0.4',
+        }
+        html = requests.get(self.url, headers=headers).text
+        print "got html"
+        print html
         if first:
             self.cache[:] = []
         for block in extract_all('<div class=\\"WB_cardwrap S_bg2 clearfix\\" >', '<\\/div>\\t<\\/div>\\n<\\/div>\\n', html):
+            print block
 
             user_name = extract('<a class=\\"W_texta W_fb\\" nick-name=\\"', '\\" href=\\"http:\\/\\/weibo.com', block)
 
@@ -89,7 +106,7 @@ class MainHandler(tornado.web.RequestHandler):
         if isinstance(query, unicode):
             query = unicode.encode(query, 'utf-8')
         query = urllib2.quote(query)
-        url = "http://s.weibo.com/wb/%s" % query
+        url = "http://s.weibo.com/%s" % query
         logging.info("Get url, parse start!->%s" % url)
         global_news_buffer.url = url
         try:
@@ -101,7 +118,7 @@ class MainHandler(tornado.web.RequestHandler):
         try:
             global_news_buffer.parse_url(first=True)
             logging.info("adding func to scheduler")
-            scheduler.add_job(global_news_buffer.parse_url, 'interval', seconds=30)
+            scheduler.add_job(global_news_buffer.parse_url, 'interval', seconds=50)
             scheduler.start()
         except:
             raise
