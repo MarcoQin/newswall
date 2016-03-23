@@ -23,6 +23,9 @@ from extract import extract, extract_all
 define("port", default=9000, help="run on the given port", type=int)
 define("debug", default=False, help="run in debug mode")
 
+g_start = 0
+g_end = 10
+
 
 class NewsBuffer(object):
     def __init__(self):
@@ -50,19 +53,22 @@ class NewsBuffer(object):
             'accept_encoding': 'gzip, deflate, sdch',
             'accept_language': 'zh-CN,zh;q=0.8,ja;q=0.6,en;q=0.4',
         }
-        html = requests.get(self.url, headers=headers).text
+        #  html = requests.get(self.url, headers=headers).text
         print "got html"
-        print html
         if first:
             self.cache[:] = []
-        for block in extract_all('<div class=\\"WB_cardwrap S_bg2 clearfix\\" >', '<\\/div>\\t<\\/div>\\n<\\/div>\\n', html):
-            print block
+        #  for block in extract_all('<div class=\\"WB_cardwrap S_bg2 clearfix\\" >', '<\\/div>\\t<\\/div>\\n<\\/div>\\n', html):
+        global g_start
+        global g_end
+        for i in range(g_start, g_end):
 
-            user_name = extract('<a class=\\"W_texta W_fb\\" nick-name=\\"', '\\" href=\\"http:\\/\\/weibo.com', block)
+            #  user_name = extract('<a class=\\"W_texta W_fb\\" nick-name=\\"', '\\" href=\\"http:\\/\\/weibo.com', block)
+            user_name = "test%s" % i
 
             start = '<p class=\\"comment_txt\\" node-type=\\"feed_list_content\\" nick-name=\\"%s\\">' % user_name
 
-            content = extract(start, '<\\/p>', block).replace('\n', '')
+            #  content = extract(start, '<\\/p>', block).replace('\n', '')
+            content = "hahahahahahahaha%s" % i
 
             newsid = hashlib.new("md5", content).hexdigest()
             newsblock = dict(user_name=user_name, content=content, id=newsid)
@@ -73,6 +79,8 @@ class NewsBuffer(object):
             else:
                 print 'parse update'
                 self.parse_update(newsblock)
+        g_start = g_end
+        g_end += 10
 
     def parse_update(self, block):
         if block.get('id', None) not in self.idpool:
@@ -118,7 +126,7 @@ class MainHandler(tornado.web.RequestHandler):
         try:
             global_news_buffer.parse_url(first=True)
             logging.info("adding func to scheduler")
-            scheduler.add_job(global_news_buffer.parse_url, 'interval', seconds=50)
+            scheduler.add_job(global_news_buffer.parse_url, 'interval', seconds=3)
             scheduler.start()
         except:
             raise
@@ -135,7 +143,7 @@ class MainHandler(tornado.web.RequestHandler):
         logging.info("Sendding response!")
 
         self.write(allnews)
-        # self.finish()
+        self.finish()
 
 
 class StatusHandler(tornado.web.RequestHandler):
