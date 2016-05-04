@@ -11,6 +11,7 @@ def extract(begin, end, html):
             end = html.find(end, start)
         if end is None or end >= 0:
             return html[start:end].strip()
+    return ''
 
 
 def extract_all(begin, end, html):
@@ -31,5 +32,7 @@ def _extract_all(begin, end, html):
                 result.append(html[start:endpos])
                 from_pos = endpos+len(end)
                 continue
+            else:
+                break
         break
     return result
